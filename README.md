@@ -170,13 +170,13 @@ python -m pytest -v
 Build the image:
 
 ```bash
-docker build -t mean-service .
+docker build -t minitab-service .
 ```
 
 Run the container:
 
 ```bash
-docker run --rm --name mean-service-container -p 3000:3000 -e PORT=3000 mean-service
+docker run --rm --name minitab-service-container -p 3000:3000 -e PORT=3000 minitab-service
 ```
 
 Or use the included PowerShell script:
