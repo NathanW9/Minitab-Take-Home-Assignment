@@ -1,10 +1,16 @@
 from flask import Flask, request, jsonify
 import math
 import os
+import logging
 
 app = Flask(__name__)
+
 # Limit incoming requests to 1 MB
 app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024
+
+# Configure application logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @app.route("/", methods=["GET"])
 def home():
@@ -19,18 +25,22 @@ def health():
 def validate_input(nums):
     #Check if input is a list/array
     if not isinstance(nums, list):
+        logger.warning("Invalid input: expected an array of numbers")
         return "Must be an array of numbers"
 
     #Check if array is empty
     if len(nums) == 0:
+        logger.warning("Invalid input: array cannot be empty")
         return "Must contain at least one number"
 
     #Check if the array contains only ints or floats 
     if any(isinstance(n, bool) or not isinstance(n, (int, float)) for n in nums):
+        logger.warning("Invalid input: array must contain only numbers")
         return "All values must be numbers"
 
     #Check for NaN and infinity
     if any(isinstance(n, float) and not math.isfinite(n) for n in nums):
+        logger.warning("Invalid input: values must be finite numbers")
         return "All values must be finite numbers"
 
     return None
@@ -67,4 +77,5 @@ def calculate_stddev():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 3000))
+    logger.info(f"Starting application on port {port}")
     app.run(host="0.0.0.0", port=port)
