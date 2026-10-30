@@ -55,6 +55,23 @@ def test_malformed_input(client):
     assert response.status_code == 400
     assert response.json["error"] == ("Must be an array of numbers")
 
+def test_nan_input(client):
+    response = client.post("/mean", data='[NaN]', content_type="application/json")
+    assert response.status_code == 400
 
 
+def test_infinity_input(client):
+    response = client.post("/mean", data='[Infinity]', content_type="application/json")
+    assert response.status_code == 400
+
+def test_request_too_large(client):
+    large_data = "[" + ",".join(["1"] * 600000) + "]"
+
+    response = client.post(
+        "/mean",
+        data=large_data,
+        content_type="application/json"
+    )
+
+    assert response.status_code == 413
 

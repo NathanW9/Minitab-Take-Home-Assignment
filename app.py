@@ -3,6 +3,8 @@ import math
 import os
 
 app = Flask(__name__)
+# Limit incoming requests to 1 MB
+app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024
 
 @app.route("/", methods=["GET"])
 def home():
@@ -13,7 +15,7 @@ def home():
 def health():
     return jsonify({"status": "ok"}), 200
 
-#Check that the input is a non empty array of ints
+#Check if the input is a non empty array of ints
 def validate_input(nums):
     #Check if input is a list/array
     if not isinstance(nums, list):
@@ -23,9 +25,13 @@ def validate_input(nums):
     if len(nums) == 0:
         return "Must contain at least one number"
 
-    #Check is the array contains only ints or floats 
+    #Check if the array contains only ints or floats 
     if any(isinstance(n, bool) or not isinstance(n, (int, float)) for n in nums):
         return "All values must be numbers"
+
+    #Check for NaN and infinity
+    if any(isinstance(n, float) and not math.isfinite(n) for n in nums):
+        return "All values must be finite numbers"
 
     return None
 

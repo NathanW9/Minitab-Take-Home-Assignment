@@ -1,4 +1,3 @@
-
 name: Run Tests
 
 on:
@@ -23,3 +22,6 @@ jobs:
 
       - name: Run automated tests
         run: python -m pytest -v
+
+      - name: Build Docker image
+        run: docker build -t mean-service .
