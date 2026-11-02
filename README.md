@@ -186,6 +186,40 @@ Or use the included PowerShell script:
 
 The service is then available at [http://localhost:3000](http://localhost:3000).
 
+## Testing the Running Service
+
+Once the service is running, open a separate PowerShell window to test the endpoints, make sure port number is correct
+
+Home endpoint
+```powershell
+irm http://localhost:3000/
+```
+
+Health check
+```powershell
+irm http://localhost:3000/health
+```
+
+Calculate mean (expected: 3)
+```powershell
+irm http://localhost:3000/mean -Method Post -ContentType "application/json" -Body '[1, 2, 3, 4, 5]'
+```
+
+Calculate population standard deviation (expected: 1.414)
+```powershell
+irm http://localhost:3000/stddev -Method Post -ContentType "application/json" -Body '[1, 2, 3, 4, 5]'
+```
+
+Empty array
+```powershell
+irm http://localhost:3000/mean -Method Post -ContentType "application/json" -Body '[]'
+```
+
+Non-numeric values
+```powershell
+irm http://localhost:3000/stddev -Method Post -ContentType "application/json" -Body '[1, "hello", 3]'
+```
+
 ## Continuous Integration
 
 The project uses GitHub Actions to automatically run checks when changes are pushed or a pull request is opened.
